@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:alpine
+    container_name: postgre
+    environment:
+      POSTGRES_DB: django_db        # Database name
+      POSTGRES_USER: django_user    # Database user
+      POSTGRES_PASSWORD: azerty     # Database password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persist data across container restarts
+    networks:
+      - backend
+
+  django:
+    build: .
+    image: dummy_django
+    container_name: django
+    command: gunicorn --bind 0.0.0.0:8080 dummy_django.wsgi:application
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgres://django_user:azerty@db:5432/django_db # Uses the same user/password from the db service
+    depends_on:
+      - db
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  postgres_data:
+

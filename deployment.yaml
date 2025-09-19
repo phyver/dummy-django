@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dummy_django
+  labels:
+    app: dummy_django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dummy_django
+  template:
+    metadata:
+      labels:
+        app: dummy_django
+    spec:
+      containers:
+        - name: django
+          image: image-registry.openshift-image-registry.svc:5000/dummy_django/dummy_django:latest
+          ports:
+            - containerPort: 8080
+

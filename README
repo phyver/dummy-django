@@ -1,0 +1,68 @@
+Run from dockerfile + docker-compose
+====================================
+
+ => Dockerfile + docker-compose.yml files
+
+
+    docker-compose build
+or
+    docker-compose build --no-cache django
+
+then
+
+    docker-compose up
+
+
+initialize django with
+    docker-compose exec django python manage.py migrate
+    docker-compose exec django python manage.py createsuperuser
+    ...
+
+access the app with
+    firefox localhost:8080
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+========================================================================
+
+
+0) create project
+
+  oc new-project dummy_django
+
+
+1) build
+
+  first time only (create build)
+  oc new-build --name=dummy_django --strategy=docker --code=https://github.com/phyver/dummy_django
+
+  then
+  oc start-build dummy_django
+
+1-bis) read logs
+
+  oc logs -f bc/dummy_django
+
+
+2) deploy
+
+  first time only
+  oc apply -f deployment.yaml
+
+3) expose service and route
+
+  first time only
+  oc expose deployment dummy_django --port=8080
+  oc expose svc/dummy_django
+
